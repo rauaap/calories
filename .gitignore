@@ -8,3 +8,7 @@ local.properties
 *.iml
 *.apk
 *.aab
+
+# Personal data exports (waistline backups, our own backups)
+waistline_export*.json
+calories-backup*.json

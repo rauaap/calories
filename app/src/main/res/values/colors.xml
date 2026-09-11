@@ -4,4 +4,14 @@
     <color name="accent">#D97757</color>
     <color name="accent_press">#C25F3F</color>
     <color name="background">#1A1820</color>
+
+    <!-- Neutrals derived from the brand background: lifted surfaces for cards
+         and popups, and white at decreasing opacity for text and hairlines. -->
+    <color name="surface">#25222C</color>
+    <color name="surface_high">#322E3A</color>
+    <color name="text_primary">#EDFFFFFF</color>
+    <color name="text_secondary">#A6FFFFFF</color>
+    <color name="text_muted">#70FFFFFF</color>
+    <color name="rule">#1FFFFFFF</color>
+    <color name="scrim">#99000000</color>
 </resources>

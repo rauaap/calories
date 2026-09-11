@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/search_back"
+            style="@style/IconButton"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_chevron_left" />
+
+        <EditText
+            android:id="@+id/search_input"
+            style="@style/Field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Search Open Food Facts"
+            android:imeOptions="actionSearch|flagNoExtractUi"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/search_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="@color/text_muted"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/search_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="Results from Open Food Facts. Check the numbers before saving."
+        android:textColor="@color/text_muted"
+        android:textSize="12sp" />
+</LinearLayout>

@@ -1,0 +1,40 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <AutoCompleteTextView
+        android:id="@+id/quick_food"
+        style="@style/Field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:completionThreshold="1"
+        android:dropDownVerticalOffset="4dp"
+        android:hint="Add food…"
+        android:imeOptions="actionNext|flagNoExtractUi"
+        android:inputType="text|textNoSuggestions"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/quick_amount"
+        style="@style/Field"
+        android:layout_width="84dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end|center_vertical"
+        android:hint="amount"
+        android:imeOptions="actionDone|flagNoExtractUi" />
+
+    <TextView
+        android:id="@+id/quick_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="32dp"
+        android:paddingStart="6dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp" />
+
+    <ImageButton
+        android:id="@+id/quick_scan"
+        style="@style/IconButton"
+        android:contentDescription="Scan barcode"
+        android:src="@drawable/ic_barcode" />
+</merge>

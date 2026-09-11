@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Stand-in wallpaper so the widget's background and radius are visible -->
+    <gradient
+        android:angle="135"
+        android:endColor="@color/background"
+        android:startColor="@color/surface_high" />
+    <corners android:radius="12dp" />
+</shape>

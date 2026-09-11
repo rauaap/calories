@@ -1,0 +1,54 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF000000">
+
+    <TextureView
+        android:id="@+id/scan_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="280dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:background="@drawable/viewfinder" />
+
+        <ImageButton
+            android:id="@+id/scan_close"
+            style="@style/IconButton"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:contentDescription="Close"
+            android:src="@drawable/ic_close" />
+
+        <ImageButton
+            android:id="@+id/scan_torch"
+            style="@style/IconButton"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:contentDescription="Flashlight"
+            android:src="@drawable/ic_flash"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/scan_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="48dp"
+            android:background="@drawable/pill_scrim"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:text="Point the camera at a barcode"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+    </FrameLayout>
+</FrameLayout>

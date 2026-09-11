@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="4dp">
+
+        <TextView
+            android:id="@+id/main_title"
+            style="@style/Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/main_settings"
+            style="@style/IconButton"
+            android:contentDescription="Settings"
+            android:src="@drawable/ic_settings" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.rauaap.calories.DiaryView
+            android:id="@+id/screen_diary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.rauaap.calories.StatsView
+            android:id="@+id/screen_stats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <com.rauaap.calories.FoodsView
+            android:id="@+id/screen_foods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/main_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface">
+
+        <TextView
+            android:id="@+id/tab_diary"
+            style="@style/Tab"
+            android:text="Diary" />
+
+        <TextView
+            android:id="@+id/tab_stats"
+            style="@style/Tab"
+            android:text="Stats" />
+
+        <TextView
+            android:id="@+id/tab_foods"
+            style="@style/Tab"
+            android:text="Foods" />
+    </LinearLayout>
+</LinearLayout>

@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace = 'com.example.app'
+    namespace = 'com.rauaap.calories'
     compileSdk = 36
     buildToolsVersion = '36.0.0'
 
     defaultConfig {
-        applicationId = 'com.example.app'
+        applicationId = 'com.rauaap.calories'
         minSdk = 36
         targetSdk = 36
         versionCode = 1
@@ -19,4 +19,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    // Barcode decoding for the scanner. Pure Java, no Play Services.
+    implementation 'com.google.zxing:core:3.5.4'
+
+    testImplementation 'junit:junit:4.13.2'
+    // Real org.json for JVM tests; android.jar only ships stubs.
+    testImplementation 'org.json:json:20250517'
 }
