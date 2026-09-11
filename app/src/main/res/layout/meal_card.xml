@@ -39,10 +39,9 @@
         android:textColor="@color/text_muted"
         android:textSize="12sp" />
 
-    <LinearLayout
+    <com.rauaap.calories.FlowLayout
         android:id="@+id/meal_entries"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical" />
+        android:layout_marginTop="8dp" />
 </LinearLayout>

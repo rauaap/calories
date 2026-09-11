@@ -284,6 +284,13 @@ final class Db extends SQLiteOpenHelper {
         changed();
     }
 
+    /** Moves an entry to another meal. The day's totals don't change, so the widget stays as it is. */
+    void moveEntry(long entryId, long mealId) {
+        ContentValues v = new ContentValues();
+        v.put("meal_id", mealId);
+        getWritableDatabase().update("entry", v, "id = ?", args(entryId));
+    }
+
     void deleteEntry(long id) {
         getWritableDatabase().delete("entry", "id = ?", args(id));
         changed();

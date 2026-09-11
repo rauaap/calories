@@ -9,6 +9,9 @@ can import waistline's backup.
 - **Meals are yours.** There are no fixed breakfast / lunch / dinner slots. Tap
   **+** to start a meal whenever you eat; tap a meal to see, edit or add items;
   long-press it to rename or delete.
+- **Entries are pills.** Tap one to change its amount or remove it. Long-press
+  and drag it onto another meal card to move it there; the diary scrolls while
+  you hold the pill near the top or bottom edge.
 - **Quick add.** Type in the field at the bottom: your saved foods and meal
   presets filter as you type. The list opens upward with the best match at the
   bottom, right above the field, marked with →. **Enter** takes it and jumps to

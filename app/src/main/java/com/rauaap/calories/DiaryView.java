@@ -1,12 +1,15 @@
 package com.rauaap.calories;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -29,6 +32,18 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
     private final QuickAddBar quickAdd;
     private long day;
     private boolean followToday = true;
+    /** The pill being dragged, dimmed until the drag ends. */
+    private View dragging;
+    /** -1 up, 1 down, 0 not scrolling: the diary scrolls while a pill is held near an edge. */
+    private int autoScroll;
+    private final Runnable autoScroller = new Runnable() {
+        @Override
+        public void run() {
+            if (autoScroll == 0) return;
+            scroll.scrollBy(0, autoScroll * Ui.dp(getContext(), 8));
+            postDelayed(this, 16);
+        }
+    };
 
     public DiaryView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -127,15 +142,10 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         ((TextView) card.findViewById(R.id.meal_meta)).setText(
                 Ui.join(target ? "Quick add goes here" : null, time, Ui.macros(t)));
 
-        LinearLayout rows = card.findViewById(R.id.meal_entries);
-        for (Meal.Entry e : meal.entries) {
-            View row = inflater.inflate(R.layout.entry_row, rows, false);
-            ((TextView) row.findViewById(R.id.entry_name)).setText(e.name);
-            ((TextView) row.findViewById(R.id.entry_amount)).setText(Ui.amount(e.amount, e.unit));
-            ((TextView) row.findViewById(R.id.entry_kcal)).setText(Ui.kcal(e.nutrients.kcal) + " kcal");
-            rows.addView(row);
-        }
+        FlowLayout rows = card.findViewById(R.id.meal_entries);
+        for (Meal.Entry e : meal.entries) rows.addView(pill(inflater, rows, e));
         rows.setVisibility(meal.entries.isEmpty() ? GONE : VISIBLE);
+        card.setOnDragListener((v, event) -> onCardDrag(v, meal, event));
 
         card.setOnClickListener(v -> c.startActivity(new Intent(c, MealActivity.class)
                 .putExtra(MealActivity.EXTRA_ID, meal.id)));
@@ -143,6 +153,90 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
             mealOptions(meal);
             return true;
         });
+    }
+
+    /** One logged item: tap to edit the amount, long-press to drag it to another meal. */
+    private View pill(LayoutInflater inflater, ViewGroup parent, Meal.Entry e) {
+        View pill = inflater.inflate(R.layout.entry_pill, parent, false);
+        ((TextView) pill.findViewById(R.id.pill_name)).setText(e.name);
+        ((TextView) pill.findViewById(R.id.pill_detail)).setText(
+                Ui.amount(e.amount, e.unit) + " · " + Ui.kcal(e.nutrients.kcal) + " kcal");
+        pill.setOnClickListener(v -> Ui.amountDialog(getContext(), e.name, e.amount, e.unit, amount -> {
+            db.setEntryAmount(e, amount);
+            render();
+        }, () -> {
+            db.deleteEntry(e.id);
+            render();
+        }));
+        pill.setOnLongClickListener(v -> {
+            v.startDragAndDrop(ClipData.newPlainText("entry", e.name), new View.DragShadowBuilder(v), e, 0);
+            dragging = v;
+            v.setAlpha(0.3f);
+            return true;
+        });
+        return pill;
+    }
+
+    /** Meal cards take dropped pills. */
+    private boolean onCardDrag(View card, Meal meal, DragEvent event) {
+        Object dragged = event.getLocalState();
+        if (!(dragged instanceof Meal.Entry entry)) return false;
+        switch (event.getAction()) {
+            case DragEvent.ACTION_DRAG_ENTERED:
+                if (entry.mealId != meal.id) setCardBackground(card, R.drawable.card_drop);
+                break;
+            case DragEvent.ACTION_DRAG_LOCATION:
+                edgeScroll(card, event.getY());
+                break;
+            case DragEvent.ACTION_DRAG_EXITED:
+                setCardBackground(card, R.drawable.card_clickable);
+                autoScroll = 0;
+                break;
+            case DragEvent.ACTION_DROP:
+                setCardBackground(card, R.drawable.card_clickable);
+                autoScroll = 0;
+                if (entry.mealId != meal.id) {
+                    db.moveEntry(entry.id, meal.id);
+                    render();
+                }
+                break;
+            case DragEvent.ACTION_DRAG_ENDED:
+                setCardBackground(card, R.drawable.card_clickable);
+                autoScroll = 0;
+                if (dragging != null) {
+                    dragging.setAlpha(1f);
+                    dragging = null;
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    /** setBackgroundResource drops the view's padding, so put it back. */
+    private static void setCardBackground(View card, int background) {
+        int left = card.getPaddingLeft();
+        int top = card.getPaddingTop();
+        int right = card.getPaddingRight();
+        int bottom = card.getPaddingBottom();
+        card.setBackgroundResource(background);
+        card.setPadding(left, top, right, bottom);
+    }
+
+    /** Scrolls the diary while a pill is held near the top or bottom of the list. */
+    private void edgeScroll(View card, float yInCard) {
+        int[] cardOnScreen = new int[2];
+        int[] scrollOnScreen = new int[2];
+        card.getLocationOnScreen(cardOnScreen);
+        scroll.getLocationOnScreen(scrollOnScreen);
+        float y = cardOnScreen[1] + yInCard - scrollOnScreen[1];
+        float zone = Ui.dp(getContext(), 72);
+        int direction = y < zone ? -1 : y > scroll.getHeight() - zone ? 1 : 0;
+        if (direction == autoScroll) return;
+        autoScroll = direction;
+        removeCallbacks(autoScroller);
+        if (direction != 0) post(autoScroller);
     }
 
     private void mealOptions(Meal meal) {
