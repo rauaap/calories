@@ -29,6 +29,7 @@ public class SettingsActivity extends Activity {
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private TextView dayStart;
+    private Switch focusQuickAdd;
     private Switch chartScaled;
 
     @Override
@@ -37,10 +38,13 @@ public class SettingsActivity extends Activity {
         setContentView(R.layout.activity_settings);
         Ui.fitInsets(findViewById(R.id.root));
         dayStart = findViewById(R.id.settings_day_start_value);
+        focusQuickAdd = findViewById(R.id.settings_focus_quick);
         chartScaled = findViewById(R.id.settings_chart_scaled);
 
         findViewById(R.id.settings_back).setOnClickListener(v -> finish());
         findViewById(R.id.settings_day_start).setOnClickListener(v -> pickDayStart());
+        findViewById(R.id.settings_focus_row).setOnClickListener(v -> focusQuickAdd.toggle());
+        focusQuickAdd.setOnCheckedChangeListener((button, on) -> Prefs.setFocusQuickAdd(this, on));
         findViewById(R.id.settings_chart_row).setOnClickListener(v -> chartScaled.toggle());
         chartScaled.setOnCheckedChangeListener((button, on) -> Prefs.setChartScaled(this, on));
         findViewById(R.id.settings_export).setOnClickListener(v -> startActivityForResult(
@@ -63,6 +67,7 @@ public class SettingsActivity extends Activity {
     private void render() {
         int m = Prefs.dayStart(this);
         dayStart.setText(String.format(Locale.ROOT, "%02d:%02d", m / 60, m % 60));
+        focusQuickAdd.setChecked(Prefs.focusQuickAdd(this));
         chartScaled.setChecked(Prefs.chartScaled(this));
     }
 

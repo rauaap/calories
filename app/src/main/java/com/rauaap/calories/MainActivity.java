@@ -51,6 +51,8 @@ public class MainActivity extends Activity {
             return WindowInsets.CONSUMED;
         });
         select(savedInstanceState != null ? savedInstanceState.getInt("tab") : 0);
+        // Only on a real launch: not when coming back to the app, or after a rotation.
+        if (savedInstanceState == null && current == 0 && Prefs.focusQuickAdd(this)) diary.focusQuickAdd();
     }
 
     @Override

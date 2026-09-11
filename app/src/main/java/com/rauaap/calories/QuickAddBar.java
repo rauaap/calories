@@ -100,6 +100,11 @@ public class QuickAddBar extends LinearLayout {
         this.listener = listener;
     }
 
+    /** Focuses the food field and opens the keyboard. */
+    void focusFood() {
+        Ui.showKeyboard(foodInput);
+    }
+
     /** Reloads the searchable foods (and presets); call when the host resumes. */
     void reload() {
         Db db = Db.get(getContext());

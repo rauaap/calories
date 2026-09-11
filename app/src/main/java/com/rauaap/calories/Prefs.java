@@ -21,6 +21,15 @@ final class Prefs {
         prefs(c).edit().putInt("day_start", minutes).apply();
     }
 
+    /** Whether launching the app puts the cursor in the quick-add food field. */
+    static boolean focusQuickAdd(Context c) {
+        return prefs(c).getBoolean("focus_quick_add", false);
+    }
+
+    static void setFocusQuickAdd(Context c, boolean focus) {
+        prefs(c).edit().putBoolean("focus_quick_add", focus).apply();
+    }
+
     /** Whether stats bars start just under the lowest day instead of at zero. */
     static boolean chartScaled(Context c) {
         return prefs(c).getBoolean("chart_scaled", false);

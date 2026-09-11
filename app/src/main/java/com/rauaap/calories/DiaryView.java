@@ -76,6 +76,11 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         quickAdd.reload();
     }
 
+    /** Puts the cursor in the quick-add food field, keyboard up. */
+    void focusQuickAdd() {
+        quickAdd.focusFood();
+    }
+
     boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         return quickAdd.onActivityResult(requestCode, resultCode, data);
     }
