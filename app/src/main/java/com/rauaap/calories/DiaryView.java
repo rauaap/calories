@@ -168,10 +168,12 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         TextView name = card.findViewById(R.id.meal_name);
         name.setText(meal.title());
         name.setTextColor(c.getColor(target ? R.color.accent : R.color.text_primary));
+        String time = DateFormat.format(DateFormat.is24HourFormat(c) ? "HH:mm" : "h:mm a",
+                new Date(meal.created)).toString();
+        ((TextView) card.findViewById(R.id.meal_time)).setText(time);
         ((TextView) card.findViewById(R.id.meal_kcal)).setText(Ui.kcal(t.kcal) + " kcal");
-        String time = DateFormat.getTimeFormat(c).format(new Date(meal.created));
         ((TextView) card.findViewById(R.id.meal_meta)).setText(
-                Ui.join(target ? "Quick add goes here" : null, time, Ui.macros(t)));
+                Ui.join(target ? "Quick add goes here" : null, Ui.macros(t)));
 
         FlowLayout rows = card.findViewById(R.id.meal_entries);
         for (Meal.Entry e : meal.entries) rows.addView(pill(inflater, rows, e));
