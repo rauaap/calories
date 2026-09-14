@@ -15,7 +15,7 @@ final class Backup {
     private Backup() {
     }
 
-    static JSONObject toJson(ImportData data, int dayStart, boolean chartScaled) throws JSONException {
+    static JSONObject toJson(ImportData data) throws JSONException {
         JSONArray foods = new JSONArray();
         for (Food f : data.foods) {
             foods.put(nutrients(new JSONObject(), f.nutrients)
@@ -49,10 +49,16 @@ final class Backup {
                     .put("name", m.name)
                     .put("entries", entries));
         }
+        JSONObject settings = new JSONObject();
+        if (data.dayStart != null) settings.put("dayStart", data.dayStart);
+        if (data.focusQuickAdd != null) settings.put("focusQuickAdd", data.focusQuickAdd);
+        if (data.autoMeals != null) settings.put("autoMeals", data.autoMeals);
+        if (data.autoMealMinutes != null) settings.put("autoMealMinutes", data.autoMealMinutes);
+        if (data.chartScaled != null) settings.put("chartScaled", data.chartScaled);
         return new JSONObject()
                 .put("format", FORMAT)
                 .put("version", 1)
-                .put("settings", new JSONObject().put("dayStart", dayStart).put("chartScaled", chartScaled))
+                .put("settings", settings)
                 .put("foods", foods)
                 .put("presets", presets)
                 .put("meals", meals);
@@ -65,6 +71,9 @@ final class Backup {
         JSONObject settings = root.optJSONObject("settings");
         if (settings != null) {
             if (settings.has("dayStart")) data.dayStart = settings.getInt("dayStart");
+            if (settings.has("focusQuickAdd")) data.focusQuickAdd = settings.getBoolean("focusQuickAdd");
+            if (settings.has("autoMeals")) data.autoMeals = settings.getBoolean("autoMeals");
+            if (settings.has("autoMealMinutes")) data.autoMealMinutes = settings.getInt("autoMealMinutes");
             if (settings.has("chartScaled")) data.chartScaled = settings.getBoolean("chartScaled");
         }
 

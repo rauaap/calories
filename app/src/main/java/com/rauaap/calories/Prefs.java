@@ -48,6 +48,24 @@ final class Prefs {
         prefs(c).edit().putInt("auto_meal_minutes", minutes).apply();
     }
 
+    /** Copies the settings into a backup. */
+    static void collect(Context c, ImportData data) {
+        data.dayStart = dayStart(c);
+        data.focusQuickAdd = focusQuickAdd(c);
+        data.autoMeals = autoMeals(c);
+        data.autoMealMinutes = autoMealMinutes(c);
+        data.chartScaled = chartScaled(c);
+    }
+
+    /** Restores whichever settings a backup carried. */
+    static void apply(Context c, ImportData data) {
+        if (data.dayStart != null) setDayStart(c, data.dayStart);
+        if (data.focusQuickAdd != null) setFocusQuickAdd(c, data.focusQuickAdd);
+        if (data.autoMeals != null) setAutoMeals(c, data.autoMeals);
+        if (data.autoMealMinutes != null) setAutoMealMinutes(c, data.autoMealMinutes);
+        if (data.chartScaled != null) setChartScaled(c, data.chartScaled);
+    }
+
     /** Whether stats bars start just under the lowest day instead of at zero. */
     static boolean chartScaled(Context c) {
         return prefs(c).getBoolean("chart_scaled", false);

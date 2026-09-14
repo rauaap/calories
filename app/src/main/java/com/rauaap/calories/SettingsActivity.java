@@ -180,12 +180,12 @@ public class SettingsActivity extends Activity {
     }
 
     private void export(Uri uri) {
-        int start = Prefs.dayStart(this);
-        boolean scaled = Prefs.chartScaled(this);
         io.execute(() -> {
             try (OutputStream out = getContentResolver().openOutputStream(uri, "wt")) {
                 if (out == null) throw new IOException("can't open the file");
-                String json = Backup.toJson(Db.get(this).snapshot(), start, scaled).toString(1);
+                ImportData data = Db.get(this).snapshot();
+                Prefs.collect(this, data);
+                String json = Backup.toJson(data).toString(1);
                 out.write(json.getBytes(StandardCharsets.UTF_8));
                 toast("Backup saved");
             } catch (IOException | JSONException e) {
@@ -226,8 +226,7 @@ public class SettingsActivity extends Activity {
                 .setMessage(message)
                 .setPositiveButton(waistline ? "Import" : "Replace", (d, w) -> io.execute(() -> {
                     Db.get(this).importData(data, !waistline);
-                    if (data.dayStart != null) Prefs.setDayStart(this, data.dayStart);
-                    if (data.chartScaled != null) Prefs.setChartScaled(this, data.chartScaled);
+                    Prefs.apply(this, data);
                     runOnUiThread(this::render);
                     toast("Import complete");
                 }))

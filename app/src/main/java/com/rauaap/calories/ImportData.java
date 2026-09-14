@@ -14,6 +14,9 @@ final class ImportData {
     int skipped;
     /** Settings carried by our own backups; null when absent. */
     Integer dayStart;
+    Boolean focusQuickAdd;
+    Boolean autoMeals;
+    Integer autoMealMinutes;
     Boolean chartScaled;
 
     int entryCount() {
