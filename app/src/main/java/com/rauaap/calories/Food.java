@@ -19,8 +19,10 @@ final class Food {
     Nutrients nutrients = new Nutrients();
     /** Default amount to prefill, in {@link #unit}; 0 when there is none. */
     double serving;
-    /** How many diary entries use this food; ranks quick-add matches. */
+    /** How many diary entries use this food. */
     int uses;
+    /** Recency-weighted diary uses; ranks quick-add matches within a text-match tier. */
+    double frecency;
 
     static double defaultPer(String unit) {
         return "pcs".equals(unit) ? 1 : 100;

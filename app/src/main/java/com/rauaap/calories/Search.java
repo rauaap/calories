@@ -8,10 +8,19 @@ import java.util.Locale;
 /**
  * Ranks foods and presets against typed text. Every word must appear in the
  * name or brand; names starting with the text rank first, then names with a
- * word starting with it, then any match. Ties go to the most-used food.
+ * word starting with it, then any match. Ties go to the food with the highest
+ * frecency (frequency with older uses exponentially decayed).
  */
 final class Search {
+    /** A use contributes half as much to frecency after this many days. */
+    private static final long HALF_LIFE_MILLIS = 30L * 24 * 60 * 60 * 1000;
+
     private Search() {
+    }
+
+    static double useWeight(long usedAt, long now) {
+        double age = Math.max(0, (double) now - usedAt);
+        return Math.pow(0.5, age / HALF_LIFE_MILLIS);
     }
 
     private static final class Hit {
@@ -45,7 +54,7 @@ final class Search {
             hits.add(new Hit(item, score));
         }
         hits.sort(Comparator.<Hit>comparingInt(h -> h.score)
-                .thenComparingInt(h -> -uses(h.item))
+                .thenComparing((a, b) -> Double.compare(frecency(b.item), frecency(a.item)))
                 .thenComparing(h -> name(h.item), String.CASE_INSENSITIVE_ORDER));
         for (int i = 0; i < hits.size() && i < limit; i++) out.add(hits.get(i).item);
         return out;
@@ -59,8 +68,8 @@ final class Search {
         return item instanceof Food f ? f.brand : "";
     }
 
-    private static int uses(Object item) {
-        return item instanceof Food f ? f.uses : 0;
+    private static double frecency(Object item) {
+        return item instanceof Food f ? f.frecency : 0;
     }
 
     private static boolean startsWord(String text, String word) {

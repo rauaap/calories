@@ -13,8 +13,10 @@ can import waistline's backup.
   and drag it onto another meal card to move it there; the diary scrolls while
   you hold the pill near the top or bottom edge.
 - **Quick add.** Type in the field at the bottom: your saved foods and meal
-  presets filter as you type. The list opens upward with the best match at the
-  bottom, right above the field, marked with →. **Enter** takes it and jumps to
+  presets filter as you type. Text-match quality comes first, then foods used
+  frequently and recently rank higher (usage has a 30-day half-life). The list
+  opens upward with the best match at the bottom, right above the field, marked
+  with →. **Enter** takes it and jumps to
   the amount, with the unit already shown and the food's serving prefilled.
   **Enter** again adds it to the most recent meal (the one marked
   "Quick add goes here"), creating one if the day has none. Focus returns to the

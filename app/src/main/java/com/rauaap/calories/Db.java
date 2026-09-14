@@ -76,7 +76,24 @@ final class Db extends SQLiteOpenHelper {
         try (Cursor c = getReadableDatabase().rawQuery(FOOD_QUERY + " ORDER BY f.name COLLATE NOCASE", null)) {
             while (c.moveToNext()) out.add(readFood(c));
         }
+        loadFrecency(out);
         return out;
+    }
+
+    /** Sums diary uses with a 30-day exponential half-life for quick-add ranking. */
+    private void loadFrecency(List<Food> foods) {
+        Map<Long, Food> byId = new HashMap<>();
+        for (Food food : foods) byId.put(food.id, food);
+        long now = System.currentTimeMillis();
+        try (Cursor c = getReadableDatabase().rawQuery(
+                "SELECT e.food_id, m.created, COUNT(*) FROM entry e"
+                        + " JOIN meal m ON m.id = e.meal_id WHERE e.food_id IS NOT NULL"
+                        + " GROUP BY e.food_id, m.created", null)) {
+            while (c.moveToNext()) {
+                Food food = byId.get(c.getLong(0));
+                if (food != null) food.frecency += c.getInt(2) * Search.useWeight(c.getLong(1), now);
+            }
+        }
     }
 
     Food food(long id) {
