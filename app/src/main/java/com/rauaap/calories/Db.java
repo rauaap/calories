@@ -239,11 +239,16 @@ final class Db extends SQLiteOpenHelper {
         return getWritableDatabase().insertOrThrow("meal", null, v);
     }
 
-    /** The most recently created meal of the day, or -1. */
-    long lastMealId(long day) {
+    /** The day's most recently created meal, or null. Only id, day and created are filled in. */
+    Meal lastMeal(long day) {
         try (Cursor c = getReadableDatabase().rawQuery(
-                "SELECT id FROM meal WHERE day = ? ORDER BY id DESC LIMIT 1", args(day))) {
-            return c.moveToFirst() ? c.getLong(0) : -1;
+                "SELECT id, created FROM meal WHERE day = ? ORDER BY id DESC LIMIT 1", args(day))) {
+            if (!c.moveToFirst()) return null;
+            Meal m = new Meal();
+            m.id = c.getLong(0);
+            m.day = day;
+            m.created = c.getLong(1);
+            return m;
         }
     }
 

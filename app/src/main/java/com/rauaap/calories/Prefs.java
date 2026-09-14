@@ -30,6 +30,24 @@ final class Prefs {
         prefs(c).edit().putBoolean("focus_quick_add", focus).apply();
     }
 
+    /** Whether quick add starts a new meal once the latest one is older than the interval. */
+    static boolean autoMeals(Context c) {
+        return prefs(c).getBoolean("auto_meals", false);
+    }
+
+    static void setAutoMeals(Context c, boolean on) {
+        prefs(c).edit().putBoolean("auto_meals", on).apply();
+    }
+
+    /** How long after a meal was created before quick add begins a new one, in minutes. */
+    static int autoMealMinutes(Context c) {
+        return prefs(c).getInt("auto_meal_minutes", 120);
+    }
+
+    static void setAutoMealMinutes(Context c, int minutes) {
+        prefs(c).edit().putInt("auto_meal_minutes", minutes).apply();
+    }
+
     /** Whether stats bars start just under the lowest day instead of at zero. */
     static boolean chartScaled(Context c) {
         return prefs(c).getBoolean("chart_scaled", false);

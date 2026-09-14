@@ -6,6 +6,12 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +35,9 @@ public class SettingsActivity extends Activity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private TextView dayStart;
     private Switch focusQuickAdd;
+    private Switch autoMeals;
+    private View intervalRow;
+    private EditText interval;
     private Switch chartScaled;
 
     @Override
@@ -39,12 +47,22 @@ public class SettingsActivity extends Activity {
         Ui.fitInsets(findViewById(R.id.root));
         dayStart = findViewById(R.id.settings_day_start_value);
         focusQuickAdd = findViewById(R.id.settings_focus_quick);
+        autoMeals = findViewById(R.id.settings_auto_meals);
+        intervalRow = findViewById(R.id.settings_interval_row);
+        interval = findViewById(R.id.settings_interval);
         chartScaled = findViewById(R.id.settings_chart_scaled);
 
         findViewById(R.id.settings_back).setOnClickListener(v -> finish());
         findViewById(R.id.settings_day_start).setOnClickListener(v -> pickDayStart());
         findViewById(R.id.settings_focus_row).setOnClickListener(v -> focusQuickAdd.toggle());
         focusQuickAdd.setOnCheckedChangeListener((button, on) -> Prefs.setFocusQuickAdd(this, on));
+        findViewById(R.id.settings_auto_meals_row).setOnClickListener(v -> autoMeals.toggle());
+        autoMeals.setOnCheckedChangeListener((button, on) -> {
+            Prefs.setAutoMeals(this, on);
+            updateIntervalRow();
+        });
+        intervalRow.setOnClickListener(v -> Ui.showKeyboard(interval));
+        bindInterval();
         findViewById(R.id.settings_chart_row).setOnClickListener(v -> chartScaled.toggle());
         chartScaled.setOnCheckedChangeListener((button, on) -> Prefs.setChartScaled(this, on));
         findViewById(R.id.settings_export).setOnClickListener(v -> startActivityForResult(
@@ -65,10 +83,75 @@ public class SettingsActivity extends Activity {
     }
 
     private void render() {
-        int m = Prefs.dayStart(this);
-        dayStart.setText(String.format(Locale.ROOT, "%02d:%02d", m / 60, m % 60));
+        dayStart.setText(Ui.clock(Prefs.dayStart(this)));
         focusQuickAdd.setChecked(Prefs.focusQuickAdd(this));
+        autoMeals.setChecked(Prefs.autoMeals(this));
+        interval.setText(Ui.clock(Prefs.autoMealMinutes(this)));
         chartScaled.setChecked(Prefs.chartScaled(this));
+        updateIntervalRow();
+    }
+
+    /** The interval only applies with auto meals on, so grey it out otherwise. */
+    private void updateIntervalRow() {
+        boolean on = autoMeals.isChecked();
+        intervalRow.setAlpha(on ? 1f : 0.4f);
+        intervalRow.setEnabled(on);
+        interval.setEnabled(on);
+    }
+
+    /** Digits only, with the colon filled in after the hours: typing 02 shows "02:". */
+    private void bindInterval() {
+        interval.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+        interval.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        interval.addTextChangedListener(new TextWatcher() {
+            private boolean formatting;
+            private boolean deleting;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                deleting = after < count;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (formatting) return;
+                formatting = true;
+                String raw = s.toString();
+                String digits = raw.replaceAll("\\D", "");
+                if (digits.length() > 4) digits = digits.substring(0, 4);
+                // Backspacing the colon the field added takes the hour digit with it, so
+                // "02:" goes straight to "0". Deleting a minute digit keeps the colon.
+                if (deleting && digits.length() == 2 && raw.indexOf(':') < 0) digits = digits.substring(0, 1);
+                String text = digits.length() < 2 ? digits : digits.substring(0, 2) + ":" + digits.substring(2);
+                if (!text.contentEquals(s)) s.replace(0, s.length(), text);
+                formatting = false;
+                if (digits.length() == 4 && !deleting) {
+                    int hours = Integer.parseInt(digits.substring(0, 2));
+                    int minutes = Math.min(Integer.parseInt(digits.substring(2)), 59);
+                    Prefs.setAutoMealMinutes(SettingsActivity.this, hours * 60 + minutes);
+                    // The last digit means they're done: drop the cursor and the keyboard.
+                    interval.clearFocus();
+                    Ui.hideKeyboard(interval);
+                }
+            }
+        });
+        // Enter (or Done) finishes editing rather than leaving the cursor sitting there.
+        interval.setOnEditorActionListener((v, action, event) -> {
+            if (!Ui.isEnter(action, event)) return false;
+            if (Ui.isPress(event)) {
+                interval.clearFocus();
+                Ui.hideKeyboard(interval);
+            }
+            return true;
+        });
+        // Half-typed input reverts to what's saved.
+        interval.setOnFocusChangeListener((v, focused) -> {
+            if (!focused) interval.setText(Ui.clock(Prefs.autoMealMinutes(this)));
+        });
     }
 
     private void pickDayStart() {

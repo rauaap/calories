@@ -24,6 +24,10 @@ can import waistline's backup.
   field with that food picked.
 - **Day start.** Settings → *Day starts at* sets when a new diary day begins.
   With 05:00, anything logged at 03:00 still counts toward the previous day.
+- **Auto meals.** Settings → *Auto meals* starts a new meal when you quick add
+  more than *New meal after* (e.g. 02:00) since the current meal was created,
+  instead of piling everything into one meal. Today only; earlier days always
+  add to their last meal.
 - Settings → *Start typing on launch* opens the app with the cursor already in
   the quick-add field and the keyboard up. Off by default.
 - Use ‹ › to move between days; tap the date to jump back to today.

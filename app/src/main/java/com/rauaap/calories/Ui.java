@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
@@ -63,6 +64,11 @@ final class Ui {
     /** "150g", "250ml", but "2 pcs" and "300 kcal": unit symbols hug the number, words get a space. */
     static String amount(double v, String unit) {
         return amount(v) + ("g".equals(unit) || "ml".equals(unit) ? "" : " ") + unit;
+    }
+
+    /** "02:00" for a number of minutes, used for times of day and intervals alike. */
+    static String clock(int minutes) {
+        return String.format(Locale.ROOT, "%02d:%02d", minutes / 60, minutes % 60);
     }
 
     static String macros(Nutrients n) {

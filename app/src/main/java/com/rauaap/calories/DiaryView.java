@@ -44,6 +44,8 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
             postDelayed(this, 16);
         }
     };
+    /** Redraws the latest meal when its auto-meal interval ends. */
+    private final Runnable expireTarget = this::render;
 
     public DiaryView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -106,13 +108,28 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         render();
     }
 
-    /** The meal quick add writes to: the latest one, created if the day has none. */
+    /**
+     * The meal quick add writes to: the day's latest one, or a new one when it has
+     * none. With auto meals on, a new meal also starts once the latest one is older
+     * than the chosen interval. Only on today: on earlier days "how long ago" means
+     * nothing, so those always use their latest meal.
+     */
     private long targetMeal() {
-        long id = db.lastMealId(day);
-        return id >= 0 ? id : db.addMeal(day);
+        Meal last = db.lastMeal(day);
+        if (last == null) return db.addMeal(day);
+        if (targetExpiresAt(last) <= System.currentTimeMillis()) return db.addMeal(day);
+        return last.id;
+    }
+
+    /** The instant at which quick add will stop targeting this meal, or never. */
+    private long targetExpiresAt(Meal meal) {
+        Context c = getContext();
+        if (day != Days.today(c) || !Prefs.autoMeals(c)) return Long.MAX_VALUE;
+        return meal.created + Prefs.autoMealMinutes(c) * 60_000L;
     }
 
     private void render() {
+        removeCallbacks(expireTarget);
         Context c = getContext();
         date.setText(Days.label(c, day));
         List<Meal> list = db.meals(day);
@@ -121,14 +138,28 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         total.setText(Ui.kcal(sum.kcal));
         macros.setText(Ui.macros(sum));
 
+        long now = System.currentTimeMillis();
+        Meal last = list.isEmpty() ? null : list.get(list.size() - 1);
+        long expiresAt = last == null ? Long.MAX_VALUE : targetExpiresAt(last);
+        boolean hasTarget = last != null && expiresAt > now;
+
         meals.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(c);
         for (int i = 0; i < list.size(); i++) {
             View card = inflater.inflate(R.layout.meal_card, meals, false);
-            bindMeal(inflater, card, list.get(i), i == list.size() - 1);
+            bindMeal(inflater, card, list.get(i), hasTarget && i == list.size() - 1);
             meals.addView(card);
         }
         empty.setVisibility(list.isEmpty() ? VISIBLE : GONE);
+        if (expiresAt != Long.MAX_VALUE && expiresAt > now) {
+            postDelayed(expireTarget, expiresAt - now);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(expireTarget);
+        super.onDetachedFromWindow();
     }
 
     private void bindMeal(LayoutInflater inflater, View card, Meal meal, boolean target) {
