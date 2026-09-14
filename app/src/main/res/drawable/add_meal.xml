@@ -1,8 +1,9 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/accent_press">
     <item>
-        <shape android:shape="oval">
-            <solid android:color="@color/accent" />
+        <shape>
+            <solid android:color="@color/accent_soft" />
+            <corners android:radius="12dp" />
         </shape>
     </item>
 </ripple>
