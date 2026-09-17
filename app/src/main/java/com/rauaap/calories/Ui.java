@@ -17,6 +17,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -27,6 +29,10 @@ import java.util.function.DoubleConsumer;
 
 /** Shared formatting, input and dialog helpers. */
 final class Ui {
+    interface InsetsListener {
+        void onInsets(WindowInsets insets, int bottomChange);
+    }
+
     private Ui() {
     }
 
@@ -35,13 +41,56 @@ final class Ui {
     }
 
     /** Pads a root view by the system bars and keyboard (the app is edge-to-edge). */
-    static void fitInsets(View root) {
+    static void fitInsets(View root, InsetsListener... listeners) {
+        final int[] previousBottom = {-1};
         root.setOnApplyWindowInsetsListener((v, insets) -> {
             Insets i = insets.getInsets(WindowInsets.Type.systemBars()
                     | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+            int bottomChange = previousBottom[0] < 0 ? 0 : i.bottom - previousBottom[0];
+            previousBottom[0] = i.bottom;
             v.setPadding(i.left, i.top, i.right, i.bottom);
+            for (InsetsListener listener : listeners) listener.onInsets(insets, bottomChange);
             return WindowInsets.CONSUMED;
         });
+    }
+
+    /** Keeps a ListView anchored to the keyboard and restores its exact position when it closes. */
+    static InsetsListener followKeyboard(ListView list) {
+        final boolean[] keyboardVisible = {false};
+        final int[] position = {ListView.INVALID_POSITION};
+        final int[] top = {0};
+        return (insets, bottomChange) -> {
+            boolean visible = insets.isVisible(WindowInsets.Type.ime());
+            if (visible && !keyboardVisible[0]) {
+                position[0] = list.getFirstVisiblePosition();
+                View first = list.getChildAt(0);
+                top[0] = first == null ? 0 : first.getTop();
+            }
+            if (!visible && keyboardVisible[0]) {
+                if (position[0] != ListView.INVALID_POSITION) {
+                    list.post(() -> list.setSelectionFromTop(position[0], top[0]));
+                }
+            } else if (visible && bottomChange != 0) {
+                list.post(() -> list.scrollListBy(bottomChange));
+            }
+            keyboardVisible[0] = visible;
+        };
+    }
+
+    /** Keeps a ScrollView anchored to the keyboard and restores its exact position when it closes. */
+    static InsetsListener followKeyboard(ScrollView scroll) {
+        final boolean[] keyboardVisible = {false};
+        final int[] position = {0};
+        return (insets, bottomChange) -> {
+            boolean visible = insets.isVisible(WindowInsets.Type.ime());
+            if (visible && !keyboardVisible[0]) position[0] = scroll.getScrollY();
+            if (!visible && keyboardVisible[0]) {
+                scroll.post(() -> scroll.scrollTo(0, position[0]));
+            } else if (visible && bottomChange != 0) {
+                scroll.post(() -> scroll.scrollBy(0, bottomChange));
+            }
+            keyboardVisible[0] = visible;
+        };
     }
 
     static String kcal(double v) {

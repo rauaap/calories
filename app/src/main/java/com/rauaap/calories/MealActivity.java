@@ -24,7 +24,6 @@ public class MealActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal);
-        Ui.fitInsets(findViewById(R.id.root));
         db = Db.get(this);
         mealId = getIntent().getLongExtra(EXTRA_ID, 0);
         title = findViewById(R.id.meal_title);
@@ -41,6 +40,7 @@ public class MealActivity extends Activity {
             }
         };
         ListView list = findViewById(R.id.meal_list);
+        Ui.fitInsets(findViewById(R.id.root), Ui.followKeyboard(list));
         list.setAdapter(adapter);
         list.setEmptyView(findViewById(R.id.meal_empty));
         list.setOnItemClickListener((parent, view, position, id) -> {

@@ -102,6 +102,10 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
         return quickAdd.onActivityResult(requestCode, resultCode, data);
     }
 
+    Ui.InsetsListener followKeyboard() {
+        return Ui.followKeyboard(scroll);
+    }
+
     private void go(long newDay) {
         day = newDay;
         followToday = newDay == Days.today(getContext());

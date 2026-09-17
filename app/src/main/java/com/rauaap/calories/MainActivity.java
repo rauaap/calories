@@ -2,7 +2,6 @@ package com.rauaap.calories;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Insets;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
@@ -43,13 +42,8 @@ public class MainActivity extends Activity {
         findViewById(R.id.main_settings).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
 
         // Edge-to-edge: pad for system bars and keyboard, and drop the tabs while typing.
-        findViewById(R.id.root).setOnApplyWindowInsetsListener((v, insets) -> {
-            Insets i = insets.getInsets(WindowInsets.Type.systemBars()
-                    | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
-            v.setPadding(i.left, i.top, i.right, i.bottom);
-            tabBar.setVisibility(insets.isVisible(WindowInsets.Type.ime()) ? View.GONE : View.VISIBLE);
-            return WindowInsets.CONSUMED;
-        });
+        Ui.fitInsets(findViewById(R.id.root), diary.followKeyboard(), (insets, bottomChange) ->
+                tabBar.setVisibility(insets.isVisible(WindowInsets.Type.ime()) ? View.GONE : View.VISIBLE));
         select(savedInstanceState != null ? savedInstanceState.getInt("tab") : 0);
         // Only on a real launch: not when coming back to the app, or after a rotation.
         if (savedInstanceState == null && current == 0 && Prefs.focusQuickAdd(this)) diary.focusQuickAdd();
