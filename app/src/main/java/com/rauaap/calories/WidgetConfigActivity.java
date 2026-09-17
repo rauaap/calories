@@ -37,9 +37,9 @@ public class WidgetConfigActivity extends Activity {
         preview = findViewById(R.id.widget_preview);
         radiusValue = findViewById(R.id.widget_radius_value);
 
-        bindSwitch(R.id.widget_protein, cfg.protein, on -> cfg.protein = on);
-        bindSwitch(R.id.widget_carbs, cfg.carbs, on -> cfg.carbs = on);
         bindSwitch(R.id.widget_fat, cfg.fat, on -> cfg.fat = on);
+        bindSwitch(R.id.widget_carbs, cfg.carbs, on -> cfg.carbs = on);
+        bindSwitch(R.id.widget_protein, cfg.protein, on -> cfg.protein = on);
         findViewById(R.id.widget_text_color).setOnClickListener(v ->
                 ColorPickerView.show(this, "Text color", cfg.textColor, color -> {
                     cfg.textColor = color;

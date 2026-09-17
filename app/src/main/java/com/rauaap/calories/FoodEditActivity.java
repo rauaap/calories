@@ -27,9 +27,9 @@ public class FoodEditActivity extends Activity {
     private EditText barcode;
     private EditText per;
     private EditText kcal;
-    private EditText protein;
-    private EditText carbs;
     private EditText fat;
+    private EditText carbs;
+    private EditText protein;
     private EditText serving;
     private Spinner unit;
     private TextView servingUnit;
@@ -51,13 +51,13 @@ public class FoodEditActivity extends Activity {
         barcode = findViewById(R.id.food_barcode);
         per = findViewById(R.id.food_per);
         kcal = findViewById(R.id.food_kcal);
-        protein = findViewById(R.id.food_protein);
-        carbs = findViewById(R.id.food_carbs);
         fat = findViewById(R.id.food_fat);
+        carbs = findViewById(R.id.food_carbs);
+        protein = findViewById(R.id.food_protein);
         serving = findViewById(R.id.food_serving);
         unit = findViewById(R.id.food_unit);
         servingUnit = findViewById(R.id.food_serving_unit);
-        for (EditText e : new EditText[] {per, kcal, protein, carbs, fat, serving}) Ui.decimalInput(e);
+        for (EditText e : new EditText[] {per, kcal, fat, carbs, protein, serving}) Ui.decimalInput(e);
 
         ((TextView) findViewById(R.id.food_title)).setText(food.id > 0 ? "Edit food" : "New food");
         name.setText(food.name);
@@ -65,9 +65,9 @@ public class FoodEditActivity extends Activity {
         barcode.setText(food.barcode);
         per.setText(Ui.amount(food.per));
         fill(kcal, food.nutrients.kcal);
-        fill(protein, food.nutrients.protein);
-        fill(carbs, food.nutrients.carbs);
         fill(fat, food.nutrients.fat);
+        fill(carbs, food.nutrients.carbs);
+        fill(protein, food.nutrients.protein);
         fill(serving, food.serving);
         boolean noData = Double.isNaN(food.nutrients.kcal) && Double.isNaN(food.nutrients.protein)
                 && Double.isNaN(food.nutrients.carbs) && Double.isNaN(food.nutrients.fat);

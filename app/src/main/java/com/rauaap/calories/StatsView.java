@@ -14,7 +14,8 @@ import java.util.function.IntConsumer;
 
 /** Daily totals for one metric over a range, as a bar chart plus a by-day table. */
 public class StatsView extends FrameLayout implements MainActivity.Screen {
-    private static final String[] METRICS = {"Calories", "Protein", "Carbs", "Fat"};
+    private static final String[] METRICS = {"Calories", "Fat", "Carbs", "Protein"};
+    private static final int[] METRIC_IDS = {Nutrients.KCAL, Nutrients.FAT, Nutrients.CARBS, Nutrients.PROTEIN};
     private static final int[] RANGES = {7, 14, 30, 0};
     private static final String[] RANGE_LABELS = {"7 days", "14 days", "30 days", "All"};
 
@@ -86,7 +87,7 @@ public class StatsView extends FrameLayout implements MainActivity.Screen {
         int count = 0;
         for (int i = 0; i < n; i++) {
             Nutrients t = totals.get(from + i);
-            values[i] = t == null ? Double.NaN : t.get(metric);
+            values[i] = t == null ? Double.NaN : t.get(METRIC_IDS[metric]);
             if (t == null) continue;
             sum += values[i];
             lo = Math.min(lo, values[i]);
@@ -95,8 +96,8 @@ public class StatsView extends FrameLayout implements MainActivity.Screen {
         }
 
         // Grams sit right against the number ("42g"); calories keep a space ("1,850 kcal").
-        String unit = metric == Nutrients.KCAL ? " kcal" : "g";
-        DoubleFunction<String> format = metric == Nutrients.KCAL ? Ui::kcal : Ui::grams;
+        String unit = METRIC_IDS[metric] == Nutrients.KCAL ? " kcal" : "g";
+        DoubleFunction<String> format = METRIC_IDS[metric] == Nutrients.KCAL ? Ui::kcal : Ui::grams;
         chart.setData(from, values, unit, format, Prefs.chartScaled(c));
         title.setText(METRICS[metric] + " · " + (RANGES[range] > 0 ? "last " + RANGES[range] + " days" : "all time"));
         avg.setText(count > 0 ? format.apply(sum / count) + unit : "–");

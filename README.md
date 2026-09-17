@@ -50,7 +50,7 @@ can import waistline's backup.
 
 ## Stats
 
-Calories, protein, carbs or fat per day over the last 7, 14 or 30 days, or all
+Calories, fat, carbs or protein per day over the last 7, 14 or 30 days, or all
 time. Tap a bar for its value. Days with nothing logged are gaps and don't count
 toward the average. By default bars start at zero; Settings → *Scale bars to the
 data* starts them just under the lowest day instead.
@@ -59,7 +59,7 @@ data* starts them just under the lowest day instead.
 
 Shows today's calories, updating as you log and resetting at your day start.
 Its own settings (shown when you place it, or later from the launcher's widget
-settings) choose whether protein, carbs and fat appear underneath, the text and
+settings) choose whether fat, carbs and protein appear underneath, the text and
 background colors (with transparency), and the corner radius.
 
 ## Backup and import

@@ -118,9 +118,9 @@ public class CalorieWidget extends AppWidgetProvider {
         v.setTextColor(R.id.widget_kcal, cfg.textColor);
         v.setTextColor(R.id.widget_unit, fade(cfg.textColor, 0.7f));
         List<String> macros = new ArrayList<>();
-        if (cfg.protein) macros.add("P " + Ui.grams(today.protein) + "g");
-        if (cfg.carbs) macros.add("C " + Ui.grams(today.carbs) + "g");
         if (cfg.fat) macros.add("F " + Ui.grams(today.fat) + "g");
+        if (cfg.carbs) macros.add("C " + Ui.grams(today.carbs) + "g");
+        if (cfg.protein) macros.add("P " + Ui.grams(today.protein) + "g");
         v.setTextViewText(R.id.widget_macros, String.join(" · ", macros));
         v.setTextColor(R.id.widget_macros, fade(cfg.textColor, 0.85f));
         v.setViewVisibility(R.id.widget_macros, macros.isEmpty() ? View.GONE : View.VISIBLE);

@@ -66,10 +66,10 @@
                 android:text="Show under the calories" />
 
             <Switch
-                android:id="@+id/widget_protein"
+                android:id="@+id/widget_fat"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Protein"
+                android:text="Fat"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp" />
 
@@ -82,10 +82,10 @@
                 android:textSize="16sp" />
 
             <Switch
-                android:id="@+id/widget_fat"
+                android:id="@+id/widget_protein"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Fat"
+                android:text="Protein"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp" />
 

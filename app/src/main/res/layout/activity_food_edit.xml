@@ -170,12 +170,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Protein"
+                    android:text="Fat"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/food_protein"
+                    android:id="@+id/food_fat"
                     style="@style/Field"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
@@ -232,12 +232,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Fat"
+                    android:text="Protein"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/food_fat"
+                    android:id="@+id/food_protein"
                     style="@style/Field"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"

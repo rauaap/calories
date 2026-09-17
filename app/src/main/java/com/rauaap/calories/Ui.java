@@ -121,7 +121,7 @@ final class Ui {
     }
 
     static String macros(Nutrients n) {
-        return "P " + grams(n.protein) + "g · C " + grams(n.carbs) + "g · F " + grams(n.fat) + "g";
+        return "F " + grams(n.fat) + "g · C " + grams(n.carbs) + "g · P " + grams(n.protein) + "g";
     }
 
     /** Joins the non-empty parts with a middle dot. */

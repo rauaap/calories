@@ -95,8 +95,8 @@ public class FoodsView extends LinearLayout implements MainActivity.Screen {
         TextView trailing = view.findViewById(R.id.item_trailing);
         if (item instanceof Food f) {
             title.setText(f.name);
-            subtitle.setText(Ui.join(f.brand, "per " + f.perLabel(), "P " + Ui.grams(f.nutrients.protein)
-                    + " · C " + Ui.grams(f.nutrients.carbs) + " · F " + Ui.grams(f.nutrients.fat)));
+            subtitle.setText(Ui.join(f.brand, "per " + f.perLabel(), "F " + Ui.grams(f.nutrients.fat)
+                    + " · C " + Ui.grams(f.nutrients.carbs) + " · P " + Ui.grams(f.nutrients.protein)));
             trailing.setText(Ui.kcal(f.nutrients.kcal) + " kcal");
         } else {
             Preset p = (Preset) item;
