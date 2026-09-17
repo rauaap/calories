@@ -17,7 +17,6 @@ public class FlowLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
-        int childWidthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
         int childHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         int x = 0;
         int rowHeight = 0;
@@ -25,7 +24,9 @@ public class FlowLayout extends ViewGroup {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child.getVisibility() == GONE) continue;
-            child.measure(childWidthSpec, childHeightSpec);
+            int childWidthMode = child.getLayoutParams().width == LayoutParams.MATCH_PARENT
+                    ? MeasureSpec.EXACTLY : MeasureSpec.AT_MOST;
+            child.measure(MeasureSpec.makeMeasureSpec(width, childWidthMode), childHeightSpec);
             int w = child.getMeasuredWidth();
             if (x > 0 && x + w > width) {
                 height += rowHeight + gap;

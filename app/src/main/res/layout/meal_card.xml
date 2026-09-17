@@ -40,13 +40,28 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/meal_meta"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textColor="@color/text_muted"
-        android:textSize="12sp" />
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/meal_target"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/meal_meta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <com.rauaap.calories.FlowLayout
         android:id="@+id/meal_entries"

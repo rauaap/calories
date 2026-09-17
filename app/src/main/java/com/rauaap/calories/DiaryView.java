@@ -176,8 +176,9 @@ public class DiaryView extends LinearLayout implements MainActivity.Screen {
                 new Date(meal.created)).toString();
         ((TextView) card.findViewById(R.id.meal_time)).setText(time);
         ((TextView) card.findViewById(R.id.meal_kcal)).setText(Ui.kcal(t.kcal) + " kcal");
-        ((TextView) card.findViewById(R.id.meal_meta)).setText(
-                Ui.join(target ? "Quick add goes here" : null, Ui.macros(t)));
+        ((TextView) card.findViewById(R.id.meal_target)).setText(
+                target ? "Quick add goes here" : null);
+        ((TextView) card.findViewById(R.id.meal_meta)).setText(Ui.macros(t));
 
         FlowLayout rows = card.findViewById(R.id.meal_entries);
         for (Meal.Entry e : meal.entries) rows.addView(pill(inflater, rows, e));
