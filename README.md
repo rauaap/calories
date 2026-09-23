@@ -87,6 +87,8 @@ Database License.
 
 ## Building
 
+For signed releases, versioning, and signing-key setup, see [RELEASING.md](RELEASING.md).
+
 A fully containerized, CLI-driven Gradle build. No JDK, Android SDK, or Gradle is
 needed on the host — everything runs inside a podman container defined by the
 `Containerfile`. The only host dependency is `podman` (and `adb` to install).
@@ -108,7 +110,7 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 Other targets:
 
 ```sh
-make release            # assembleRelease
+make release            # signed, auto-versioned APK in dist/ (see RELEASING.md)
 make clean              # gradle clean
 make gradle ARGS="tasks"   # run any gradle task in the container
 make gradle ARGS="testDebugUnitTest"   # JVM unit tests

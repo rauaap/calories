@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+apply from: 'release.gradle'
+
 android {
     namespace = 'com.rauaap.calories'
     compileSdk = 36
